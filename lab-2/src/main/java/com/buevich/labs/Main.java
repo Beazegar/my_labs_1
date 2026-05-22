@@ -2,13 +2,13 @@ package com.buevich.labs;
 
 
 import com.buevich.labs.database.entity.Team;
-import com.buevich.labs.database.errors.Exceptions;
 import com.buevich.labs.database.factory.ConnectionFactory;
 import com.buevich.labs.database.repository.TeamRepository;
 import com.buevich.labs.database.repository.TeamRepositoryImpl;
+import com.buevich.labs.database.errors.LabotoryRuntimeException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws LabotoryRuntimeException {
         ConnectionFactory factory = new ConnectionFactory(
                 "jdbc:postgresql://localhost:5432/postgres",
                 "postgres",

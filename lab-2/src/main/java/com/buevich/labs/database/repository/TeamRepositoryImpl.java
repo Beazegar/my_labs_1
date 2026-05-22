@@ -1,8 +1,8 @@
 package com.buevich.labs.database.repository;
 
 import com.buevich.labs.database.entity.Team;
-import com.buevich.labs.database.errors.Exceptions;
 import com.buevich.labs.database.factory.ConnectionFactory;
+import com.buevich.labs.database.errors.LabotoryRuntimeException;
 
 import java.sql.*;
         import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class TeamRepositoryImpl implements TeamRepository {
              Statement stmt = conn.createStatement()) {
             stmt.execute(createTableSql);
         } catch (SQLException e) {
-            throw new Exceptions("Failed to create table", e);
+            throw new LabotoryRuntimeException("Failed to create table", e);
         }
     }
 
@@ -49,7 +49,7 @@ public class TeamRepositoryImpl implements TeamRepository {
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
-                throw new Exceptions("Creating team failed, no rows affected.");
+                throw new LabotoryRuntimeException("Creating team failed, no rows affected.");
             }
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -58,11 +58,11 @@ public class TeamRepositoryImpl implements TeamRepository {
                     team.setId(id);
                     return id;
                 } else {
-                    throw new Exceptions("Creating team failed, no ID obtained.");
+                    throw new LabotoryRuntimeException("Creating team failed, no ID obtained.");
                 }
             }
         } catch (SQLException e) {
-            throw new Exceptions("Failed to save team", e);
+            throw new LabotoryRuntimeException("Failed to save team", e);
         }
     }
 
@@ -81,7 +81,7 @@ public class TeamRepositoryImpl implements TeamRepository {
                 return null;
             }
         } catch (SQLException e) {
-            throw new Exceptions("Failed to find team by id: " + id, e);
+            throw new LabotoryRuntimeException("Failed to find team by id: " + id, e);
         }
     }
 
@@ -100,7 +100,7 @@ public class TeamRepositoryImpl implements TeamRepository {
                 return null;
             }
         } catch (SQLException e) {
-            throw new Exceptions("Failed to find team by name: " + name, e);
+            throw new LabotoryRuntimeException("Failed to find team by name: " + name, e);
         }
     }
 
@@ -118,14 +118,14 @@ public class TeamRepositoryImpl implements TeamRepository {
             }
             return teams;
         } catch (SQLException e) {
-            throw new Exceptions("Failed to fetch all teams", e);
+            throw new LabotoryRuntimeException("Failed to fetch all teams", e);
         }
     }
 
     @Override
     public boolean update(Team team) throws Exception {
         if (team.getId() == null) {
-            throw new Exceptions("Cannot update team without ID");
+            throw new LabotoryRuntimeException("Cannot update team without ID");
         }
 
         String sql = "UPDATE " + schema + "." + table + " SET name = ?, score = ? WHERE id = ?";
@@ -140,7 +140,7 @@ public class TeamRepositoryImpl implements TeamRepository {
             int rowsUpdated = ps.executeUpdate();
             return rowsUpdated > 0;
         } catch (SQLException e) {
-            throw new Exceptions("Failed to update team with id: " + team.getId(), e);
+            throw new LabotoryRuntimeException("Failed to update team with id: " + team.getId(), e);
         }
     }
 
@@ -154,7 +154,7 @@ public class TeamRepositoryImpl implements TeamRepository {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new Exceptions("Failed to delete team with id: " + id, e);
+            throw new LabotoryRuntimeException("Failed to delete team with id: " + id, e);
         }
     }
 
